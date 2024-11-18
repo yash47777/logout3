@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout Time Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h2 {
+            color: #2c3e50;
+        }
+        form {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+        }
+        label, input, button {
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: block;
+            width: 100%;
+        }
+        input[type="time"], button {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            border: none;
+            width: auto;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #result {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .toggle-label {
+            margin-right: 10px;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 34px;
+            height: 20px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 20px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 12px;
+            width: 12px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #3498db;
+        }
+        input:checked + .slider:before {
+            transform: translateX(14px);
+        }
+    </style>
+</head>
+<body>
+    <h2>Logout Time Calculator</h2>
+    <form id="calculatorForm">
+        <label for="startTime">Enter Login Time (HH:MM in 24-hour format):</label>
+        <input type="time" id="startTime" required>
+        
+        <div class="toggle-container">
+            <span class="toggle-label">Use Scheme (7.5-hour workday)</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="useScheme">
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <button type="button" onclick="calculateLogoutTime()">Calculate Logout Time</button>
+    </form>
+    
+    <h3 id="result"></h3>
+
+    <script>
+        function calculateLogoutTime() {
+            const startTimeInput = document.getElementById('startTime').value;
+            const useScheme = document.getElementById('useScheme').checked;
+            
+            if (!startTimeInput) {
+                document.getElementById('result').innerText = "Please enter a valid login time.";
+                return;
+            }
+
+            const [hours, minutes] = startTimeInput.split(':').map(Number);
+            let startDate = new Date();
+            startDate.setHours(hours, minutes, 0);
+
+            const workDuration = useScheme ? 7.5 : 8.5;
+
+            const logoutDate = new Date(startDate.getTime() + workDuration * 60 * 60 * 1000);
+            const logoutHours = String(logoutDate.getHours()).padStart(2, '0');
+            const logoutMinutes = String(logoutDate.getMinutes()).padStart(2, '0');
+
+            document.getElementById('result').innerText = `Your logout time is: ${logoutHours}:${logoutMinutes}`;
+        }
+    </script>
+</body>
+</html>
